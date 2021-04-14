@@ -22,8 +22,8 @@ class BrandFactory extends Factory
     public function definition()
     {
         return [
-            'name' => $this->faker->word,
-            'email' => $this->faker->safeEmail,
+            'name' => $this->faker->unique()->word,
+            'email' => $this->faker->unique()->safeEmail,
             'website' => $this->faker->url,
         ];
     }
