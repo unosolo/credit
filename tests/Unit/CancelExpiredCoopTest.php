@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
+
 it('cancels expired coop', function () {
     $this->expectOutputString('');
 
@@ -37,7 +38,7 @@ it('cancels expired coop and its purchases', function () {
     $purchases = Purchase::factory()->count(20)->create([
        'coop_id' => Coop::factory()->create([
            'expiration_date' => now()->addWeeks(-2),
-       ])
+       ])->id
     ]);
 
     $expired_coops = Coop::where('expiration_date', '<', date('Y-m-d'))->get();
@@ -56,23 +57,28 @@ it('cancels expired coop with purchases with pending transaction', function () {
     $this->expectOutputString('');
 
     for($i = 0; $i < 5 ; $i++){
+        $coop1 = Coop::factory()->create([
+            'expiration_date' => now()->addWeeks(-2),
+        ]);
+
         Transaction::factory()->create([
             'purchase_id' =>  Purchase::factory()->create([
-                'coop_id' => Coop::factory()->create([
-                    'expiration_date' => now()->addWeeks(-2),
-                ])
-            ]),
+                'coop_id' => $coop1->id
+            ])->id,
+            'coop_id' => $coop1->id,
             'type' => 'purchase',
             'is_pending' => false,
             'is_canceled' => false
         ]);
 
+        $coop2 = Coop::factory()->create([
+            'expiration_date' => now()->addWeeks(-2),
+        ]);
         $transactions = Transaction::factory()->create([
             'purchase_id' =>  Purchase::factory()->create([
-                'coop_id' => Coop::factory()->create([
-                    'expiration_date' => now()->addWeeks(-2),
-                ])->id
+                'coop_id' => $coop2->id
             ])->id,
+            'coop_id' => $coop2->id,
             'type' => 'purchase',
             'is_pending' => true,
             'is_canceled' => false
@@ -97,24 +103,29 @@ it('cancels expired coop with purchases with pending credit card transactions', 
     $this->expectOutputString('');
 
     for($i = 0; $i < 5 ; $i++){
+        $coop1 = Coop::factory()->create([
+            'expiration_date' => now()->addWeeks(-2),
+        ]);
+
         Transaction::factory()->create([
             'purchase_id' =>  Purchase::factory()->create([
-                'coop_id' => Coop::factory()->create([
-                    'expiration_date' => now()->addWeeks(-2),
-                ])
-            ]),
+                'coop_id' => $coop1->id
+            ])->id,
+            'coop_id' => $coop1->id,
             'type' => 'purchase',
             'source' => 'CreditCard',
             'is_pending' => false,
             'is_canceled' => false
         ]);
 
+        $coop2 = Coop::factory()->create([
+            'expiration_date' => now()->addWeeks(-2),
+        ]);
         $transactions = Transaction::factory()->create([
             'purchase_id' =>  Purchase::factory()->create([
-                'coop_id' => Coop::factory()->create([
-                    'expiration_date' => now()->addWeeks(-2),
-                ])->id
+                'coop_id' => $coop2->id
             ])->id,
+            'coop_id' => $coop2->id,
             'type' => 'purchase',
             'source' => 'CreditCard',
             'is_pending' => true,
@@ -134,29 +145,33 @@ it('cancels expired coop with purchases with pending credit card transactions', 
     expect($canceled_transactions->count())->toBe(10);
 });
 
-
 it('tests CancelExpiredCoops Class', function () {
     $this->expectOutputString('');
 
-    for($i = 0; $i < 5 ; $i++){
+    for($i = 0; $i < 5; $i++){
+        $coop1 = Coop::factory()->create([
+            'expiration_date' => now()->addWeeks(-2),
+        ]);
+
         Transaction::factory()->create([
             'purchase_id' =>  Purchase::factory()->create([
-                'coop_id' => Coop::factory()->create([
-                    'expiration_date' => now()->addWeeks(-2),
-                ])
-            ]),
+                'coop_id' => $coop1->id
+            ])->id,
+            'coop_id' => $coop1->id,
             'type' => 'purchase',
             'source' => 'CreditCard',
             'is_pending' => false,
             'is_canceled' => false
         ]);
 
+        $coop2 = Coop::factory()->create([
+            'expiration_date' => now()->addWeeks(-2),
+        ]);
         $transactions = Transaction::factory()->create([
             'purchase_id' =>  Purchase::factory()->create([
-                'coop_id' => Coop::factory()->create([
-                    'expiration_date' => now()->addWeeks(-2),
-                ])->id
+                'coop_id' => $coop2->id
             ])->id,
+            'coop_id' => $coop2->id,
             'type' => 'purchase',
             'source' => 'CreditCard',
             'is_pending' => true,
@@ -168,6 +183,8 @@ it('tests CancelExpiredCoops Class', function () {
     $cancelExpiredCoops();
 
     $canceled_transactions = Transaction::where('is_canceled', true)->get();
+    $transactions = Transaction::all();
 
     expect($canceled_transactions->count())->toBe(10);
+    expect($transactions->count())->toBe(15);
 });
