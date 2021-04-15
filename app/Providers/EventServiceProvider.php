@@ -20,7 +20,10 @@ class EventServiceProvider extends ServiceProvider
         ],
         \App\Events\CoopCreating::class => [
             '\App\Listeners\SetCoopStatus'
-        ]
+        ],
+        \App\Events\CoopCanceled::class => [
+            '\App\Listeners\SendCoopCancelNotification'
+        ],
     ];
 
     /**

@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Events\CoopCanceled;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
@@ -46,7 +47,8 @@ class Coop extends Model
             $this->status = Coop::CANCELED;
             $this->save();
 
-
+            // The following is not intended to be triggered if none of previous cancelation succeeds
+            event(new CoopCanceled($this));
         });
     }
 }
