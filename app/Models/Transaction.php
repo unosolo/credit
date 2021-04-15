@@ -64,7 +64,7 @@ class Transaction extends Model
             }
 
             if(!empty($source)){
-                self::create([
+                $transaction = self::create([
                     'buyer_id' => $this->buyer_id,
                     'type' => $type_transaction,
                     'amount' => $this->amount,
@@ -74,6 +74,8 @@ class Transaction extends Model
                     'is_canceled' => false,
                     'is_pending' => false,
                 ]);
+
+                $this->refund_transaction_id = $transaction->id;
             }
 
             $this->is_canceled = true;
