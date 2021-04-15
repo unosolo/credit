@@ -45,6 +45,8 @@ class Coop extends Model
 
             $this->status = Coop::CANCELED;
             $this->save();
+
+
         });
     }
 }

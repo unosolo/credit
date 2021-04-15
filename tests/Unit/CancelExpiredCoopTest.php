@@ -4,6 +4,9 @@ use App\Models\Coop;
 
 use App\Models\Purchase;
 use App\Models\Transaction;
+
+use App\Tasks\CancelExpiredCoops;
+
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -123,6 +126,44 @@ it('cancels expired coop with purchases with pending credit card transactions', 
     $expired_coops->map(function ($coop) {
         $coop->cancel();
     });
+
+    $canceled_transactions = Transaction::where('is_canceled', true)->get();
+
+    expect($canceled_transactions->count())->toBe(10);
+});
+
+
+it('tests CancelExpiredCoops Class', function () {
+    $this->expectOutputString('');
+
+    for($i = 0; $i < 5 ; $i++){
+        Transaction::factory()->create([
+            'purchase_id' =>  Purchase::factory()->create([
+                'coop_id' => Coop::factory()->create([
+                    'expiration_date' => now()->addWeeks(-2),
+                ])
+            ]),
+            'type' => 'purchase',
+            'source' => 'CreditCard',
+            'is_pending' => false,
+            'is_canceled' => false
+        ]);
+
+        $transactions = Transaction::factory()->create([
+            'purchase_id' =>  Purchase::factory()->create([
+                'coop_id' => Coop::factory()->create([
+                    'expiration_date' => now()->addWeeks(-2),
+                ])->id
+            ])->id,
+            'type' => 'purchase',
+            'source' => 'CreditCard',
+            'is_pending' => true,
+            'is_canceled' => false
+        ]);
+    }
+
+    $cancelExpiredCoops = new App\Tasks\CancelExpiredCoops;
+    $cancelExpiredCoops();
 
     $canceled_transactions = Transaction::where('is_canceled', true)->get();
 
