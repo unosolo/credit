@@ -14,6 +14,10 @@ class Purchase extends Model
         return $this->hasMany(Transaction::class);
     }
 
+    public function coop(){
+        return $this->belongsTo(Coop::class);
+    }
+
     public function purchaseTransaction()
     {
         return $this->hasOne(Transaction::class)->ofType('purchase');

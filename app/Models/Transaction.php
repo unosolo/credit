@@ -14,6 +14,8 @@ class Transaction extends Model
     use HasFactory;
 
     protected $fillable = [
+        'coop_id',
+        'purchase_id',
         'buyer_id',
         'type',
         'amount',
@@ -38,6 +40,11 @@ class Transaction extends Model
     public function scopeOfType($query, $type)
     {
         return $query->where('type', $type);
+    }
+
+    public function purchase()
+    {
+        return $this->belongsTo(Purchase::class);
     }
 
     public function cancel() {
@@ -65,6 +72,8 @@ class Transaction extends Model
 
             if(!empty($source)){
                 $transaction = self::create([
+                    "coop_id" => $this->coop_id,
+                    "purchase_id" => $this->purchase_id,
                     'buyer_id' => $this->buyer_id,
                     'type' => $type_transaction,
                     'amount' => $this->amount,
