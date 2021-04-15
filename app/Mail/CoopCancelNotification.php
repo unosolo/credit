@@ -31,7 +31,7 @@ class CoopCancelNotification extends Mailable
     public function build()
     {
         return $this->subject('Coop has been canceled due by expiration date')
-            ->view('mails.coop-canceled-by-expiration-date', [
+            ->view('mails.coop-canceled', [
                 'coop' => $this->coop,
                 'cancellation_reason' => 'by expiration date'
             ]);

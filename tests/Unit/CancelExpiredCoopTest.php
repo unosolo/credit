@@ -1,5 +1,6 @@
 <?php
 
+use App\Models\Brand;
 use App\Models\Coop;
 
 use App\Models\Purchase;
@@ -13,6 +14,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
 uses(Tests\TestCase::class, RefreshDatabase::class);
 
 it('cancels expired coop', function () {
+    $this->expectOutputString('');
 
     $coops = Coop::factory()->count(10)->create([
         'expiration_date' => now()->addWeeks(-2),

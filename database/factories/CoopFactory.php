@@ -22,7 +22,7 @@ class CoopFactory extends Factory
     public function definition()
     {
         return [
-            'brand_id' => \App\Models\Brand::factory(),
+            'brand_id' => \App\Models\Brand::factory()->create()->id,
             'name' => $this->faker->word,
             'expiration_date' => now()->addWeeks(2),
             'goal' => $this->faker->randomFloat(2, 1000, 1000000),

@@ -2,9 +2,11 @@
 
 namespace App\Listeners;
 
+use App\Mail\CoopCancelNotification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Support\Facades\Mail;
 
 class SendCoopCancelNotification
 {
