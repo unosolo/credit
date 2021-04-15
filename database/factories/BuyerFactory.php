@@ -8,6 +8,7 @@ use Illuminate\Support\Arr;
 
 class BuyerFactory extends Factory
 {
+    public $refund_prefs = ['credit', 'cc'];
     /**
      * The name of the factory's corresponding model.
      *
@@ -22,6 +23,10 @@ class BuyerFactory extends Factory
      */
     public function definition()
     {
-        //
+        return [
+            'username' => $this->faker->unique()->name,
+            'email' => $this->faker->unique()->email,
+            'refund_pref' => $this->refund_prefs[rand(0, 1)],
+        ];
     }
 }

@@ -23,4 +23,10 @@ class Purchase extends Model
     {
         return $this->hasOne(Transaction::class)->ofType('refund');
     }
+
+    public function cancel()
+    {
+        $this->coop_canceled = 1;
+        $this->save();
+    }
 }

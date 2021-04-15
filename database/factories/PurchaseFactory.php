@@ -2,8 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\Buyer;
+use App\Models\Coop;
 use App\Models\Purchase;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Support\Str;
 
 class PurchaseFactory extends Factory
 {
@@ -22,7 +25,11 @@ class PurchaseFactory extends Factory
     public function definition()
     {
         return [
-            //
+            'coop_id' => Coop::factory(),
+            'buyer_id' => Buyer::factory(),
+            'amount' => $this->faker->randomFloat(2, 1000, 1000000),
+            'package_quantity' => $this->faker->randomNumber(3),
+            'package_id' => Str::random(10),
         ];
     }
 }
