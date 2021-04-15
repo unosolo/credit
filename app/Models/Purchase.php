@@ -26,6 +26,10 @@ class Purchase extends Model
 
     public function cancel()
     {
+        if(!empty($this->purchaseTransaction)) {
+            $this->purchaseTransaction->cancel();
+        }
+
         $this->coop_canceled = 1;
         $this->save();
     }
