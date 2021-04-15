@@ -30,7 +30,7 @@ class Coop extends Model
 
     public function owner()
     {
-        return $this->belongsTo(Brand::class);
+        return $this->belongsTo(Brand::class, 'brand_id');
     }
 
     public function hasBeenFullyFunded()
